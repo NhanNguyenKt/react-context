@@ -1,23 +1,38 @@
-import logo from './logo.svg';
+import { useEffect, useReducer } from 'react';
+import { useStore, actions } from './store';
 import './App.css';
-
 function App() {
+  const [state, dispatch] = useStore();
+  const onchangeInput = (e) => {
+    dispatch(actions.setToDoInput(e.target.value));
+  };
+  const onCLickAdd = () => {
+    dispatch(actions.addToList());
+  };
+  const onCLickDone = (index) => {
+    dispatch(actions.check(index));
+  };
+  const onClickRemove = (index) => {
+    dispatch(actions.remove(index));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div>
+      <input
+        value={state.todoInput}
+        placeholder='Enter Todo'
+        onChange={(e) => onchangeInput(e)}
+      />
+      <button onClick={onCLickAdd}>thêm</button>
+      {state.todos.map((el, index) => (
+        <div
+          key={index}
+          style={el.status ? { textDecoration: 'line-through' } : {}}
         >
-          Learn React
-        </a>
-      </header>
+          {el.name} <button onClick={() => onCLickDone(index)}>Xong</button>
+          <button onClick={() => onClickRemove(index)}>Xoá</button>
+        </div>
+      ))}
     </div>
   );
 }
